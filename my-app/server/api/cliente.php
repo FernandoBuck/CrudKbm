@@ -94,8 +94,8 @@ if ($method === "GET") {
         {
             $query = $pdo->prepare("SELECT * FROM cliente");
             $query->execute();
-            $usuarios = $query->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($usuarios);
+            $clientes = $query->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($clientes);
         }catch (PDOException $erro)
         {
             echo "Erro ao buscar cliente: ".$erro;
@@ -108,8 +108,8 @@ if ($method === "GET") {
             $query = $pdo->prepare("SELECT * FROM cliente WHERE id = ?");
             $query->bindParam(1, $id);
             $query->execute();
-            $usuario = $query->fetch(PDO::FETCH_ASSOC);
-            echo json_encode($usuario);
+            $cliente = $query->fetch(PDO::FETCH_ASSOC);
+            echo json_encode($cliente);
         }catch (PDOException $erro)
         {
             echo "Erro ao buscar cliente: ".$erro;

@@ -6,3 +6,8 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.class-div-erro{
+    font-size: 11px;
+    color: red;
+}
