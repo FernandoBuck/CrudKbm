@@ -10,40 +10,15 @@ $( document ).ready(function()
         const senha = document.getElementById("id-senha").value
         const confirmaSenha = document.getElementById("id-confirmar-senha").value
 
-        const objectDataValidaUsuarioForm = {
-            camposVazios : validarCamposPreenchidos(),
-            nomeValidado : validaNome(nome),
-            emailValidado : validaEmail(email),
-            loginValidado : validaLogin(login),
-            senhasIguais : validaSenhaIguais(senha, confirmaSenha),
-            senhaValidado : validaSenha(senha),
-            confirmaSenhaValidado : validaSenha(confirmaSenha)
+        const objectDataUsuario = {
+            nome : nome,
+            email : email,
+            login : login,
+            senha : senha,
+            confirmaSenha : confirmaSenha
         }
-        
 
-        
-        if(objectDataValidaUsuarioForm.emailValido){
-            console.log("Email Valido")
-        }
-        if(objectDataValidaUsuarioForm.camposVazios){
-            console.log("Há campos vazios")
-        }
-        if(objectDataValidaUsuarioForm.nomeValidado){
-            console.log("Nome valido")
-        }
-        if(objectDataValidaUsuarioForm.loginValidado){
-            console.log("Login valido")
-        }
-        if(objectDataValidaUsuarioForm.senhasIguais){
-            console.log("Senhas iguais")
-        }
-        if(objectDataValidaUsuarioForm.senhaValidado){
-            console.log("Senha valida")
-        }
-        if(objectDataValidaUsuarioForm.confirmaSenhaValidado){
-            console.log("Senha de confirmação valida")
-        }
-        
+        const objectDataUsuarioValidado = validaFormUsuario(objectDataUsuario)
 
     })
 

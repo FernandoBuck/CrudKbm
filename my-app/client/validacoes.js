@@ -14,47 +14,104 @@ function validarCamposPreenchidos(){
     return haCampoVazio
 }
 
+function validarCampoPreenchido(nomeCampo, valorCampo){
+    if(valorCampo == ""){
+        $("#div-erro-"+nomeCampo).html("Esse campo é obrigatório.")
+        return false
+    }
+    return true
+}
+
 function limpaCamposAoPreencher(){
     $("input").change(function(){
         $('#div-erro-'+$(this).attr("name")).empty()
     })
 }
 
-function validaEmail(email){
-    const emailRe = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    if(emailRe.test(email)){
-        return true
-    }
-    return false
-}
-
-function validaNome(nome){
+function validaNomeRe(nome){
     const nomeRe = /^\s*([A-Za-z]{1,}([\.,] |[-']| ))*[A-Za-z]+\.?\s*$/
     if(nomeRe.test(nome)){
         return true
     }
+    $("#div-erro-nome").html("*Campo com caracteres inválidos.")
     return false
 }
 
-function validaLogin(login){
+function validaEmailRe(email){
+    const emailRe = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    if(emailRe.test(email)){
+        return true
+    }
+    $("#div-erro-email").html("*Email inválido.")
+    return false
+}
+
+function validaLoginRe(login){
     const loginRe = /^([a-zA-Z0-9])+[\.]*([a-zA-Z0-9])+$/
     if(loginRe.test(login)){
         return true
     }
-    else return false
+    $("#div-erro-login").html("*Login inválido, este campo aceita apenas letras e números separadas por pontos[.].")
+    return false
 }
 
 function validaSenhaIguais(senha, confirmaSenha){
     if(senha == confirmaSenha){
         return true
     }
+    $("#div-erro-senha").html("*As senhas devem ser iguais.")
+    $("#div-erro-confirma-senha").html("*As senhas devem ser iguais.")
     return false
 }
 
-function validaSenha(senha){
-    const senhaRe = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
+function validaSenhaRe(senha){
+    const senhaRe = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,99}$/
     if(senhaRe.test(senha)){
         return true
     }
+    $("#div-erro-senha").html("*A senha deve ter, pelo menos, 8 digitos, uma letra maiuscula, uma minuscula, um número e um carácter especial.")
     return false
+}
+
+function validaFormUsuario(objectDataUsuario){
+    
+    objectDataUsuarioValidado = {
+        campoNomePreenchido : validarCampoPreenchido("nome", objectDataUsuario.nome),
+        campoEmailPreenchido : validarCampoPreenchido("email", objectDataUsuario.email),
+        campoLoginPreenchido : validarCampoPreenchido("login", objectDataUsuario.login),
+        campoSenhaPreenchido : validarCampoPreenchido("senha", objectDataUsuario.senha),
+        campoConfirmaSenhaPreenchido : validarCampoPreenchido("confirma-senha", objectDataUsuario.confirmaSenha)
+    }
+
+    if(objectDataUsuarioValidado.campoNomePreenchido){
+        objectDataUsuarioValidado = {
+            campoNomeRe : validaNomeRe(objectDataUsuario.nome)
+        }
+    }
+    
+    if(objectDataUsuarioValidado.campoEmailPreenchido){
+        objectDataUsuarioValidado = {
+            campoEmailRe : validaEmailRe(objectDataUsuario.email)
+        }
+    }
+
+    if(objectDataUsuarioValidado.campoLoginPreenchido){
+        objectDataUsuarioValidado = {
+            campoLoginRe : validaLoginRe(objectDataUsuario.login)
+        }
+    }
+
+    if(validaSenhaIguais(objectDataUsuario.senha, objectDataUsuario.confirmaSenha)){
+        objectDataUsuarioValidado = {
+            camposSenhasIguais : true
+        }
+
+        if(objectDataUsuarioValidado.camposSenhasIguais){
+            objectDataUsuarioValidado = {
+                campoSenhaRe : validaSenhaRe(objectDataUsuario.senha)
+            }
+        }
+    }
+
+    return objectDataUsuarioValidado
 }
