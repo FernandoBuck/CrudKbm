@@ -19,6 +19,18 @@ $( document ).ready(function()
         }
 
         const objectDataUsuarioValidado = validaFormUsuario(objectDataUsuario)
+        console.log(objectDataUsuarioValidado)
+
+        if(Object.values(objectDataUsuarioValidado).every(item => item === true)){
+            const response = await $.ajax({
+                type : "POST",
+                url : "../../server/api/usuario.php",
+                data : {
+                    funcao : "cadastrar",
+                    dados : objectDataUsuario
+                }
+            })
+        }
 
     })
 

@@ -1,19 +1,3 @@
-function validarCamposPreenchidos(){
-    
-    haCampoVazio = false
-
-    $("input").each(function(){
-        if($(this).val() == ""){
-            haCampoVazio = true
-            if( $('#div-erro-'+$(this).attr("name")) ){
-			    $('#div-erro-'+$(this).attr("name")).html("*Esse campo é obrigatório.")
-                
-		    }
-        }
-    })
-    return haCampoVazio
-}
-
 function validarCampoPreenchido(nomeCampo, valorCampo){
     if(valorCampo == ""){
         $("#div-erro-"+nomeCampo).html("Esse campo é obrigatório.")
@@ -84,32 +68,22 @@ function validaFormUsuario(objectDataUsuario){
     }
 
     if(objectDataUsuarioValidado.campoNomePreenchido){
-        objectDataUsuarioValidado = {
-            campoNomeRe : validaNomeRe(objectDataUsuario.nome)
-        }
+        objectDataUsuarioValidado.campoNomeRe = validaNomeRe(objectDataUsuario.nome) 
     }
     
     if(objectDataUsuarioValidado.campoEmailPreenchido){
-        objectDataUsuarioValidado = {
-            campoEmailRe : validaEmailRe(objectDataUsuario.email)
-        }
+        objectDataUsuarioValidado.campoEmailRe = validaEmailRe(objectDataUsuario.email)
     }
 
     if(objectDataUsuarioValidado.campoLoginPreenchido){
-        objectDataUsuarioValidado = {
-            campoLoginRe : validaLoginRe(objectDataUsuario.login)
-        }
+        objectDataUsuarioValidado.campoLoginRe = validaLoginRe(objectDataUsuario.login)
     }
 
-    if(validaSenhaIguais(objectDataUsuario.senha, objectDataUsuario.confirmaSenha)){
-        objectDataUsuarioValidado = {
-            camposSenhasIguais : true
-        }
+    if(objectDataUsuarioValidado.campoSenhaPreenchido && objectDataUsuarioValidado.campoConfirmaSenhaPreenchido){
+        objectDataUsuarioValidado.camposSenhasIguais = validaSenhaIguais(objectDataUsuario.senha, objectDataUsuario.confirmaSenha) 
 
         if(objectDataUsuarioValidado.camposSenhasIguais){
-            objectDataUsuarioValidado = {
-                campoSenhaRe : validaSenhaRe(objectDataUsuario.senha)
-            }
+            objectDataUsuarioValidado.campoSenhaRe = validaSenhaRe(objectDataUsuario.senha)
         }
     }
 
