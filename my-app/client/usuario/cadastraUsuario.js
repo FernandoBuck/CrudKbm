@@ -30,7 +30,13 @@ $( document ).ready(function()
                     dados : objectDataUsuario
                 }
             })
+            if(response.usuarioAdd){
+                setTimeout(location.reload(), 2000)
+                return
+            }
+            alert("Algo deu errado!")
         }
+        
 
     })
 
