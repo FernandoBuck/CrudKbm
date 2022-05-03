@@ -20,6 +20,7 @@ $( document ).ready(function()
             email : email,
             login : login,
             senha : senha,
+            confirmarSenha : confirmarSenha,
             rua : rua,
             bairro : bairro,
             numeroCasa : numeroCasa,
@@ -28,18 +29,22 @@ $( document ).ready(function()
             estado : estado
         }
 
-        const response = await $.ajax({
-            type : "POST",
-            url : "../../server/api/cliente.php",
-            data : {
-                funcao : "cadastrar",
-                dados : objectDataCadastro
+        const objectDataClienteValidado = validaFormCliente(objectDataCadastro)
+
+        if(Object.values(objectDataClienteValidado).every(item => item === true)){
+            const response = await $.ajax({
+                type : "POST",
+                url : "../../server/api/cliente.php",
+                data : {
+                    funcao : "cadastrar",
+                    dados : objectDataCadastro
+                }
+            })
+            if(response.clienteAdd){
+                setTimeout(location.reload(), 2000)
+                return
             }
-        })
-        if(response.clienteAdd){
-            setTimeout(location.reload(), 2000)
-            return
+            alert("Algo deu errado!")
         }
-        alert("Algo deu errado!")
     })
 })

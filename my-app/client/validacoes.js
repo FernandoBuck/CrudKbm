@@ -59,7 +59,7 @@ function validaSenhaRe(senha){
 
 function validaFormUsuario(objectDataUsuario){
     
-    objectDataUsuarioValidado = {
+    const objectDataUsuarioValidado = {
         campoNomePreenchido : validarCampoPreenchido("nome", objectDataUsuario.nome),
         campoEmailPreenchido : validarCampoPreenchido("email", objectDataUsuario.email),
         campoLoginPreenchido : validarCampoPreenchido("login", objectDataUsuario.login),
@@ -88,4 +88,37 @@ function validaFormUsuario(objectDataUsuario){
     }
 
     return objectDataUsuarioValidado
+}
+
+function validaFormCliente(objectDataCliente){
+
+    const objectDataClienteValidado = {
+        campoNomePreenchido : validarCampoPreenchido("nome", objectDataCliente.nome),
+        campoEmailPreenchido : validarCampoPreenchido("email", objectDataCliente.email),
+        campoLoginPreenchido : validarCampoPreenchido("login", objectDataCliente.login),
+        campoSenhaPreenchido : validarCampoPreenchido("senha", objectDataCliente.senha),
+        campoConfirmaSenhaPreenchido : validarCampoPreenchido("confirma-senha", objectDataCliente.confirmarSenha)
+    }
+
+    if(objectDataClienteValidado.campoNomePreenchido){
+        objectDataClienteValidado.campoNomeRe = validaNomeRe(objectDataCliente.nome) 
+    }
+    
+    if(objectDataClienteValidado.campoEmailPreenchido){
+        objectDataClienteValidado.campoEmailRe = validaEmailRe(objectDataCliente.email)
+    }
+
+    if(objectDataClienteValidado.campoLoginPreenchido){
+        objectDataClienteValidado.campoLoginRe = validaLoginRe(objectDataCliente.login)
+    }
+
+    if(objectDataClienteValidado.campoSenhaPreenchido && objectDataClienteValidado.campoConfirmaSenhaPreenchido){
+        objectDataClienteValidado.camposSenhasIguais = validaSenhaIguais(objectDataCliente.senha, objectDataCliente.confirmarSenha) 
+
+        if(objectDataClienteValidado.camposSenhasIguais){
+            objectDataClienteValidado.campoSenhaRe = validaSenhaRe(objectDataCliente.senha)
+        }
+    }
+
+    return objectDataClienteValidado
 }

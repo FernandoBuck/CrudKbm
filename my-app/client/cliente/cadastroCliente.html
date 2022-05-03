@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
     integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="/my-app/client/validacoes.js"></script>
 	<script type="text/javascript" src="/my-app/client/cliente/cadastraCliente.js"></script>
     <title>Cadastro de Clientes</title>
     <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
@@ -44,49 +45,59 @@
     </nav>
     <main>
         <div class="container">
-            <form method="post" id="form-cadastro-usuario" class="row g-3">
+            <form method="post" id="form-cadastro-cliente" class="row g-3">
                 <div id="dados-persona" class="col-md-6 row g-3">
                     <div class="mb-3">
                         <label for="id-nome" class="form-label">Nome:</label>
                         <input type="email" class="form-control" id="id-nome"/>
+                        <div id="div-erro-nome" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3">
                         <label for="id-email" class="form-label">Email:</label>
                         <input class="form-control" id="id-email"/>
+                        <div id="div-erro-email" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3">
                         <label for="id-login" class="form-label">Login:</label>
                         <input class="form-control" id="id-login"/>
+                        <div id="div-erro-login" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3">
                         <label for="id-senha" class="form-label" >Senha:</label>
                         <input type="password" class="form-control" id="id-senha"/>
+                        <div id="div-erro-senha" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3">
                         <label for="id-confirmar-senha" class="form-label">Confirmar Senha:</label>
                         <input type="password" class="form-control" id="id-confirmar-senha"/>
+                        <div id="div-erro-confirma-senha" class="class-div-erro"></div>
                     </div>
                 </div>
                 <div id="dados-endereco" class="col-md-6 row g-3">
                     <div class="mb-3">
                         <label for="id-rua" class="form-label">Rua:</label>
                         <input type="email" class="form-control" id="id-rua"/>
+                        <div id="div-erro-rua" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3">
                         <label for="id-bairro" class="form-label">Bairro:</label>
                         <input class="form-control" id="id-bairro"/>
+                        <div id="div-erro-bairro" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3">
                         <label for="id-numero-casa" class="form-label">Numero:</label>
                         <input class="form-control" id="id-numero-casa"/>
+                        <div id="div-erro-numero-casa" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3">
                         <label for="id-complemento" class="form-label">Complemento:</label>
                         <input class="form-control" id="id-complemento"/>
+                        <div id="div-erro-complemento-casa" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="id-cidade" class="form-label">Cidade:</label>
                         <input class="form-control" id="id-cidade"/>
+                        <div id="div-erro-cidade" class="class-div-erro"></div>
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="id-estado" class="form-label">Estado:</label>
@@ -120,7 +131,7 @@
                             <option value="TO">Tocantins</option>
                             <option value="EX">Estrangeiro</option>
                         </select>
-                        
+                        <div id="div-erro-estado" class="class-div-erro"></div>
                     </div>
                 </div>
                 <div>
