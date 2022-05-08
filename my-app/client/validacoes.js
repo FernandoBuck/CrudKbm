@@ -1,3 +1,5 @@
+//################# Validações Front-end #################
+
 function validarCampoPreenchido(nomeCampo, valorCampo){
     if(valorCampo == ""){
         $("#div-erro-"+nomeCampo).html("Esse campo é obrigatório.")
@@ -121,4 +123,66 @@ function validaFormCliente(objectDataCliente){
     }
 
     return objectDataClienteValidado
+}
+
+//################# Validações Back-end #################
+// Exibe erros caso a resposta da API seja que o campo é inválido
+
+function erroCampoVazio(nomeCampo){
+    $("#div-erro-"+nomeCampo).html("Esse campo é obrigatório.")
+}
+
+function erroNomeInvalido(){
+    $("#div-erro-nome").html("*Campo com caracteres inválidos.")
+    
+}
+
+function erroEmailInvalido(){
+    $("#div-erro-email").html("*Email inválido.")
+}
+
+function erroLoginInvalido(){
+    $("#div-erro-login").html("*Login inválido, este campo aceita apenas letras e números separadas por pontos[.].")
+}
+
+function erroSenhasDiferentes(){
+    $("#div-erro-senha").html("*As senhas devem ser iguais.")
+    $("#div-erro-confirma-senha").html("*As senhas devem ser iguais.")
+}
+
+function erroSenhaInvalida(){
+    $("#div-erro-senha").html("*A senha deve ter, pelo menos, 8 digitos, uma letra maiuscula, uma minuscula, um número e um carácter especial.")
+}
+
+function exibeErrosFormCliente(objectDataCliente){
+    
+    if(!(objectDataCliente.campoNomePreenchido)){
+        erroCampoVazio("nome")
+    }else if(!(objectDataCliente.campoNomeValido)){
+        erroNomeInvalido()
+    }
+
+    if(!(objectDataCliente.campoEmailPreenchido)){
+        erroCampoVazio("email")
+    }else if(!(objectDataCliente.campoEmailValido)){
+        erroEmailInvalido()
+    }
+    
+    if(!(objectDataCliente.campoLoginPreenchido)){
+        erroCampoVazio("login")
+    }else if(!(objectDataCliente.campoLoginValido)){
+        erroLoginInvalido()
+    }
+
+    if(!(objectDataCliente.campoSenhaPreenchido)){
+        erroCampoVazio("senha")
+    }else if(!(objectDataCliente.campoSenhaValido)){
+        erroSenhaInvalida()
+    }else if(!(objectDataCliente.camposSenhasIguais)){
+        erroSenhasDiferentes()
+    }
+
+    if(!(objectDataCliente.campoConfirmarSenhaPreenchido)){
+        erroCampoVazio("confirma-senha")
+    }
 }

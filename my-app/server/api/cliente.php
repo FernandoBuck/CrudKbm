@@ -1,5 +1,6 @@
 <?php
 include("../conexao.php");
+include("../api/validacoes.php");
 header("Content-Type: application/json");
 $method = $_SERVER["REQUEST_METHOD"];
 
@@ -8,11 +9,23 @@ $method = $_SERVER["REQUEST_METHOD"];
 if ($method === "POST") {
 
     if($_POST["funcao"] == "cadastrar"){
-        $nome = $_POST["dados"]["nome"];
-        $email = $_POST["dados"]["email"];
-        $login = $_POST["dados"]["login"];
-        $senha = $_POST["dados"]["senha"];
-        $ativo = 1;
+
+        $dados = [
+            "nome"  => $_POST["dados"]["nome"],
+            "email" => $_POST["dados"]["email"],
+            "login" => $_POST["dados"]["login"],
+            "senha" => $_POST["dados"]["senha"],
+            "confirmarSenha" => $_POST["dados"]["confirmarSenha"],
+            "ativo" => 1
+        ];
+
+        $formCadastroValidado = validaFormCadastroCliente($dados);
+
+        if(in_array(false, $formCadastroValidado, true) === true){
+            $formCadastroValidado["clienteAdd"] = false;
+            echo json_encode($formCadastroValidado);
+            exit;
+        }
 
         try
         {
@@ -27,18 +40,20 @@ if ($method === "POST") {
                 VALUES 
                     (?, ?, ?, ?, ?)
                 ");
-            $query->bindParam(1, $nome);
-            $query->bindParam(2, $email);
-            $query->bindParam(3, $login);
-            $query->bindParam(4, $senha);
-            $query->bindParam(5, $ativo);
+            $query->bindParam(1, $dados["nome"]);
+            $query->bindParam(2, $dados["email"]);
+            $query->bindParam(3, $dados["login"]);
+            $query->bindParam(4, $dados["senha"]);
+            $query->bindParam(5, $dados["ativo"]);
             $query->execute();
             $clienteAdd = $query->rowCount();
             if($clienteAdd == 1){
-                echo json_encode(array("clienteAdd" => true));
+                $formCadastroValidado["clienteAdd"] = true;
+                echo json_encode($formCadastroValidado);
                 exit;    
             }
-            echo json_encode(array("clienteAdd" => false));
+            $formCadastroValidado["clienteAdd"] = false;
+            echo json_encode($formCadastroValidado);
             exit;
         }catch (PDOException $erro)
         {
@@ -116,6 +131,25 @@ if ($method === "GET") {
         }
     }
     exit;
+}
+
+if($_GET["funcao"] == "buscaEmail"){
+    $email = $_GET["email"];
+    try{
+        $query = $pdo ->prepare("SELECT email FROM cliente WHERE email = ?");
+        $query->bindParam(1, $email);
+        $query->execute();
+        $result = $query->rowCount();
+        if($result == 1){
+            echo json_encode(array("clienteCadastrado" => true));
+            exit;
+        }
+        echo json_encode(array("clienteCadastrado" => false));
+        exit;
+    }catch(PDOException $erro)
+    {
+        echo "Erro ao buscar email: ".$erro;
+    }
 }
 
 // ################################### DELETE ###################################

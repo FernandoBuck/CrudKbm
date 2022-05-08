@@ -29,22 +29,34 @@ $( document ).ready(function()
             estado : estado
         }
 
-        const objectDataClienteValidado = validaFormCliente(objectDataCadastro)
+        //const validacaoBack = await $.ajax({
+        //    type : "GET",
+        //    url : `../../server/api/cliente.php?funcao=buscaID&id=${email}`
+        //})
+        //if(validacaoBack){
+        //    
+        //}
 
-        if(Object.values(objectDataClienteValidado).every(item => item === true)){
-            const response = await $.ajax({
-                type : "POST",
-                url : "../../server/api/cliente.php",
-                data : {
-                    funcao : "cadastrar",
-                    dados : objectDataCadastro
-                }
-            })
-            if(response.clienteAdd){
-                setTimeout(location.reload(), 2000)
-                return
+        //const objectDataClienteValidado = validaFormCliente(objectDataCadastro)
+        
+        //if(Object.values(objectDataClienteValidado).every(item => item === true)){
+        //    
+        //}
+
+        const response = await $.ajax({
+            type : "POST",
+            url : "../../server/api/cliente.php",
+            data : {
+                funcao : "cadastrar",
+                dados : objectDataCadastro
             }
-            alert("Algo deu errado!")
+        })
+        if(response.clienteAdd){
+            setTimeout(location.reload(), 2000)
+            return
+        }else{
+            exibeErrosFormCliente(response)
         }
+        limpaCamposAoPreencher()
     })
 })
