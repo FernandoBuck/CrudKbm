@@ -19,7 +19,7 @@ if ($method === "POST") {
             "ativo" => 1
         ];
 
-        $formCadastroValidado = validaFormCadastroCliente($dados);
+        $formCadastroValidado = validaFormCadastroCliente($dados, $pdo);
 
         if(in_array(false, $formCadastroValidado, true) === true){
             $formCadastroValidado["clienteAdd"] = false;

@@ -29,20 +29,6 @@ $( document ).ready(function()
             estado : estado
         }
 
-        //const validacaoBack = await $.ajax({
-        //    type : "GET",
-        //    url : `../../server/api/cliente.php?funcao=buscaID&id=${email}`
-        //})
-        //if(validacaoBack){
-        //    
-        //}
-
-        //const objectDataClienteValidado = validaFormCliente(objectDataCadastro)
-        
-        //if(Object.values(objectDataClienteValidado).every(item => item === true)){
-        //    
-        //}
-
         const response = await $.ajax({
             type : "POST",
             url : "../../server/api/cliente.php",

@@ -154,6 +154,10 @@ function erroSenhaInvalida(){
     $("#div-erro-senha").html("*A senha deve ter, pelo menos, 8 digitos, uma letra maiuscula, uma minuscula, um número e um carácter especial.")
 }
 
+function emailCadastrado(){
+    $("#div-erro-email").html("*Email já cadastrado.")
+}
+
 function exibeErrosFormCliente(objectDataCliente){
     
     if(!(objectDataCliente.campoNomePreenchido)){
@@ -166,6 +170,8 @@ function exibeErrosFormCliente(objectDataCliente){
         erroCampoVazio("email")
     }else if(!(objectDataCliente.campoEmailValido)){
         erroEmailInvalido()
+    }else if(objectDataCliente.emailClienteCadastrado){
+        emailCadastrado()
     }
     
     if(!(objectDataCliente.campoLoginPreenchido)){
