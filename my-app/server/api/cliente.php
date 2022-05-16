@@ -112,9 +112,11 @@ if ($method === "GET") {
             $query->execute();
             $clientes = $query->fetchAll(PDO::FETCH_ASSOC);
             echo json_encode($clientes);
+            exit;
         }catch (PDOException $erro)
         {
             echo "Erro ao buscar cliente: ".$erro;
+            exit;
         }
     }
 

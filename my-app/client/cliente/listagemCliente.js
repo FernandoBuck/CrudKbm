@@ -82,8 +82,6 @@ $( document ).ready(function() {
             }
             alert("Algo deu errado!")
         })
-
-        
     }
 
     const excluiClienteID = async function() {
