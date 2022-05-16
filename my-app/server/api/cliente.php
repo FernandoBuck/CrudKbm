@@ -16,11 +16,12 @@ if ($method === "POST") {
             "login" => $_POST["dados"]["login"],
             "senha" => $_POST["dados"]["senha"],
             "confirmarSenha" => $_POST["dados"]["confirmarSenha"],
-            "ativo" => 1
+            "ativo" => "1"
         ];
 
         $formCadastroValidado = validaFormCadastroCliente($dados, $pdo);
-
+        
+        //Requer que todos sejam true
         if(in_array(false, $formCadastroValidado, true) === true){
             $formCadastroValidado["clienteAdd"] = false;
             echo json_encode($formCadastroValidado);
@@ -46,8 +47,8 @@ if ($method === "POST") {
             $query->bindParam(4, $dados["senha"]);
             $query->bindParam(5, $dados["ativo"]);
             $query->execute();
-            $clienteAdd = $query->rowCount();
-            if($clienteAdd == 1){
+            $contaLinhaAdicionada = $query->rowCount();
+            if($contaLinhaAdicionada == 1){
                 $formCadastroValidado["clienteAdd"] = true;
                 echo json_encode($formCadastroValidado);
                 exit;    

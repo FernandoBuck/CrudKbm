@@ -170,7 +170,7 @@ function exibeErrosFormCliente(objectDataCliente){
         erroCampoVazio("email")
     }else if(!(objectDataCliente.campoEmailValido)){
         erroEmailInvalido()
-    }else if(objectDataCliente.emailClienteCadastrado){
+    }else if(!(objectDataCliente.emailClienteDisponivel)){
         emailCadastrado()
     }
     

@@ -34,7 +34,7 @@ function camposSenhasIguais($senha, $confirmaSenha){
     return false;
 }
 
-function emailClienteCadastrado($email, $pdo){
+function emailClienteDisponivel($email, $pdo){
     
     try{
         $query = $pdo->prepare("SELECT email FROM cliente WHERE email = ?");
@@ -42,9 +42,9 @@ function emailClienteCadastrado($email, $pdo){
         $query->execute();
         $result = $query->rowCount();
         if($result == 1){
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }catch(PDOException $erro)
     {
         echo "Erro ao buscar email: ".$erro;
@@ -64,7 +64,7 @@ function validaFormCadastroCliente(array $dados, $pdo){
         "campoLoginValido"      => campoLoginValido($dados["login"]),
         "campoSenhaValido"      => campoSenhaValido($dados["senha"]),
         "campoConfirmarSenhaValido" => campoSenhaValido($dados["confirmarSenha"]),
-        "emailClienteCadastrado"    => emailClienteCadastrado($dados["email"], $pdo)
+        "emailClienteDisponivel"    => emailClienteDisponivel($dados["email"], $pdo)
     ];
     
     return $camposValidados;

@@ -1,18 +1,17 @@
-$( document ).ready(function() 
-{
+$( document ).ready(function() {
     const buscaTodosClientes = async function(){       
         const response = await $.ajax({
             type: "GET",
             url: '../../server/api/cliente.php?funcao=buscarTodosClientes'    
-          })
-          renderizaHTMLlistaClientes(response)
+        })
+        renderizaHTMLlistaClientes(response)
     }
     buscaTodosClientes()
 
     const renderizaHTMLlistaClientes = (response) => {
         const htmlClientes = response.map((cliente) => {
-          const {id, nome, email, login} = cliente
-          return `
+        const {id, nome, email, login} = cliente
+        return `
             <tr>
                 <th scope="row" id="id-idCliente-busca">${id}</th>
                 <td id="id-nome-busca">${nome}</td>
@@ -24,7 +23,7 @@ $( document ).ready(function()
                     <button type="button" data-id="${id}" class="btn btn-danger btn-sm bota-excluir">Excluir</button>
                 </td>
             </tr>
-          `
+        `
         })
         $("#exibe-clientes").append(htmlClientes)
         $(".botao-editar").click(buscaClienteID)
@@ -90,15 +89,15 @@ $( document ).ready(function()
     const excluiClienteID = async function() {
         const id = $(this).attr("data-id")
         
-         const response = await $.ajax({
-             type: "DELETE",
-             url: "../../server/api/cliente.php",
-             data: {
-                 funcao : "excluirCliente",
-                 id : id
-             }
-         })
-         if(response.clienteExcluido){
+        const response = await $.ajax({
+            type: "DELETE",
+            url: "../../server/api/cliente.php",
+            data: {
+                funcao : "excluirCliente",
+                id : id
+            }
+        })
+        if(response.clienteExcluido){
             setTimeout(location.reload(), 2000)
             return
         }
