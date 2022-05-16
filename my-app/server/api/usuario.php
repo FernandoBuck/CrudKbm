@@ -52,5 +52,20 @@ if ($method === "POST") {
     }
 }
 
+// ################################### GET ###################################
 
+if ($method === "GET") {
+    if($_GET["funcao"] == "buscarTodosUsuarios"){
+        try
+        {
+            $query = $pdo->prepare("SELECT * FROM usuario");
+            $query->execute();
+            $usuarios = $query->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($usuarios);
+        }catch (PDOException $erro)
+        {
+            echo "Erro ao buscar usuario: ".$erro;
+        }
+    }
+}
 ?>
