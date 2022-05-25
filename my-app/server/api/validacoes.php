@@ -51,6 +51,38 @@ function emailClienteDisponivel($email, $pdo){
     }
 }
 
+function loginClienteDisponivel($login, $pdo){
+    try{
+        $query = $pdo->prepare("SELECT login FROM cliente WHERE login = ?");
+        $query->bindParam(1, $login);
+        $query->execute();
+        $result = $query->rowCount();
+        if($result == 1){
+            return false;
+        }
+        return true;
+    }catch(PDOException $erro)
+    {
+        echo "Erro ao buscar login: ".$erro;
+    }
+}
+
+function loginUsuarioDisponivel($login, $pdo){
+    try{
+        $query = $pdo->prepare("SELECT login FROM usuario WHERE login = ?");
+        $query->bindParam(1, $login);
+        $query->execute();
+        $result = $query->rowCount();
+        if($result == 1){
+            return false;
+        }
+        return true;
+    }catch(PDOException $erro)
+    {
+        echo "Erro ao buscar login: ".$erro;
+    }
+}
+
 function validaFormCadastroCliente(array $dados, $pdo){
     $camposValidados = [
         "campoNomePreenchido"   => validaCampoPreenchido($dados["nome"]),
