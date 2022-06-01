@@ -1,5 +1,8 @@
-
-
 #form-login{
     width: 200px;
+}
+
+.class-div-erro{
+    font-size: 11px;
+    color: red;
 }

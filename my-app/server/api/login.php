@@ -1,6 +1,7 @@
 <?php
 include("../conexao.php");
-include("../api/validacoes.php");
+include("../api/validacoesForms.php");
+include("../api/manipulaSessoes.php");
 header("Content-Type: application/json");
 $method = $_SERVER["REQUEST_METHOD"];
 
@@ -15,6 +16,15 @@ if ($method === "POST") {
             "senha" => $_POST["dados"]["senha"]
         ];
 
+        $objectDataLogin = validaFormLogin($dados);
+
+        //Requer que todos sejam true
+        if(in_array(false, $objectDataLogin, true) === true){
+            $objectDataLogin["loginValido"] = false;
+            echo json_encode($objectDataLogin);
+            exit;
+        }
+
         if(loginUsuarioDisponivel($dados["login"], $pdo)){
             try{
                 $query = $pdo->prepare("SELECT login 
@@ -24,30 +34,12 @@ if ($method === "POST") {
                 $query->bindParam(1, $dados["login"]);
                 $query->bindColumn(2, $dados["senha"]);
                 $query->execute();
-                $encontrado = $query->rowCount();
-                if($encontrado == 1){
+                if(($query->rowCount()) == 1){
                     $sessao = criaSessaoLogado($dados["login"], $pdo);
                     echo json_encode($sessao);
                     exit;
                 }
                 
-                exit;
-            }catch(PDOException $erro){
-                $dados["erroAoConsultar"] = $erro;
-            }
-        }elseif(loginClienteDisponivel($dados["login"], $pdo)){
-            try{
-                $query = $pdo->prepare("SELECT login 
-                                        FROM cliente 
-                                        WHERE login= ? 
-                                        AND senha= ?");
-                $query->bindParam(1, $dados["login"]);
-                $query->bindColumn(2, $dados["senha"]);
-                $query->execute();
-                $encontrado = $query->rowCount();
-                if($encontrado == 1){
-                    echo json_encode(true);
-                }
                 exit;
             }catch(PDOException $erro){
                 $dados["erroAoConsultar"] = $erro;
@@ -69,48 +61,11 @@ if ($method === "GET") {
         
         $validaSessao = validaSessaoAtiva($dados["login"], $dados["hash"], $dados["timeStamp"], $pdo);
         
-        if(in_array(false, $validaSessao, true) === true){
-            echo json_encode();
-            exit;
-        }
+        //if(in_array(false, $validaSessao, true) === true){
+        //    echo json_encode();
+        //    exit;
+        //}
     }
-}
-
-// ################################### Banco Login ###################################
-
-function validaSessaoAtiva($hash, $login, $timeStamp, $pdo){
-    try{
-        $query = $pdo->prepare("
-            SELECT 
-                hash, 
-                timestamp, 
-                login 
-            FROM 
-                logados 
-            WHERE 
-                hash= ? 
-            AND 
-                login= ?
-            ");
-        $query->bindParam(1, $hash);
-        $query->bindParam(2, $login);
-        $query->excute();
-        if(($query->rowCount()) == 1){
-            $sessao = $query->fetch(PDO::FETCH_ASSOC);
-            $horasLogado =  $timeStamp - ($sessao["timestamp"]);
-            if($horasLogado >= 86400){
-                
-            }
-        }
-        return false;
-    }catch(PDOException $erro){
-        echo "Erro ao procurar sessão: ".$erro;
-        exit;
-    }
-}
-
-function criaSessaoLogado($login, $pdo){
-
 }
 
 ?>

@@ -192,3 +192,14 @@ function exibeErrosFormCliente(objectDataCliente){
         erroCampoVazio("confirma-senha")
     }
 }
+
+function exibeErrosFormLogin(objectDataLogin){
+    
+    if(!(objectDataLogin.campoLoginPreenchido)){
+        erroCampoVazio("login")
+    }
+
+    if(!(objectDataLogin.campoSenhaPreenchido)){
+        erroCampoVazio("senha")
+    }
+}

@@ -25,5 +25,12 @@ $( document ).ready(function()
                 dados : objectDataLogin
             },
         })
+
+        if(response.loginValido){
+            //header somewhere
+        }else{
+            exibeErrosFormLogin(response)
+        }
     })
+    limpaCamposAoPreencher()
 })

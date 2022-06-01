@@ -1,6 +1,6 @@
 <?php
 include("../conexao.php");
-include("../api/validacoes.php");
+include("../api/validacoesForms.php");
 header("Content-Type: application/json");
 $method = $_SERVER["REQUEST_METHOD"];
 
@@ -33,11 +33,11 @@ if ($method === "POST") {
             $query = $pdo->prepare("
                 INSERT INTO 
                     cliente 
-                    (nome, 
-                    email,
-                    login, 
-                    senha,
-                    ativo) 
+                        (nome, 
+                        email,
+                        login, 
+                        senha,
+                        ativo) 
                 VALUES 
                     (?, ?, ?, ?, ?)
                 ");

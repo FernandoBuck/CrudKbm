@@ -101,4 +101,13 @@ function validaFormCadastroCliente(array $dados, $pdo){
     
     return $camposValidados;
 }
+
+function validaFormLogin($dados){
+    $camposValidados = [
+        "campoLoginPreenchido" => validaCampoPreenchido($dados["login"]),
+        "campoSenhaPreenchido" => validaCampoPreenchido($dados["senha"])
+    ];
+
+    return $camposValidados;
+}
 ?>
