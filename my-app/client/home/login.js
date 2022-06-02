@@ -27,7 +27,7 @@ $( document ).ready(function()
         })
 
         if(response.loginValido){
-            //header somewhere
+            console.log(response)
         }else{
             exibeErrosFormLogin(response)
         }

@@ -36,27 +36,38 @@ function validaSessaoAtiva($hash, $login, $timeStamp, $pdo){
 }
 
 function criaSessaoLogado($login, $pdo){
+    $timeStamp = time();
     $hash = hash("whirlpool", $login . time(), false);
     try{
         $query = $pdo->prepare("
-            INSERT INTO 
-                sessoesativas
-            VALUES
-                hash= ?,
-                timestamp= ?,
-                login= ? 
-        ");
+                    INSERT INTO 
+                        sessoesativas 
+                            (hash, 
+                            timestamp, 
+                            login) 
+                        VALUES 
+                            (?,
+                            ?,
+                            ?)"
+                    );
         $query->bindParam(1, $hash);
-        $query->bindParam(2, time());
+        $query->bindParam(2, $timeStamp);
         $query->bindParam(3, $login);
         $query->excute();
         if(($query->rowCount() == 1)){
-            return true;
+            $sessao = [
+                "loginValido"   => true,
+                "hash"          => $hash,
+                "login"         => $login
+            ];
+            return $sessao;
         }
-        return false;
+        $sessao = ["loginValido" => false];
+        return $sessao;
     }catch(PDOException $erro){
-        echo "Erro ao criar sessão".$erro;
-        return false;
+        $sessao = ["loginValido" => false];
+        $sessao["erro"] = $erro;
+        return $sessao;
     }
 }
 

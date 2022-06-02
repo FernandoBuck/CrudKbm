@@ -158,6 +158,10 @@ function emailCadastrado(){
     $("#div-erro-email").html("*Email já cadastrado.")
 }
 
+function tentativaLoginInvalida(){
+    $("#div-erro-login").html("*Login ou senha inválido.")
+}
+
 function exibeErrosFormCliente(objectDataCliente){
     
     if(!(objectDataCliente.campoNomePreenchido)){
@@ -201,5 +205,9 @@ function exibeErrosFormLogin(objectDataLogin){
 
     if(!(objectDataLogin.campoSenhaPreenchido)){
         erroCampoVazio("senha")
+    }
+
+    if(objectDataLogin.campoLoginPreenchido && objectDataLogin.campoSenhaPreenchido && !(objectDataLogin.loginValido)){
+        tentativaLoginInvalida()
     }
 }

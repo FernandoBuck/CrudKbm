@@ -25,28 +25,28 @@ if ($method === "POST") {
             exit;
         }
 
-        if(loginUsuarioDisponivel($dados["login"], $pdo)){
-            try{
-                $query = $pdo->prepare("SELECT login 
-                                        FROM usuario 
-                                        WHERE login= ? 
-                                        AND senha= ?");
-                $query->bindParam(1, $dados["login"]);
-                $query->bindColumn(2, $dados["senha"]);
-                $query->execute();
-                if(($query->rowCount()) == 1){
-                    $sessao = criaSessaoLogado($dados["login"], $pdo);
-                    echo json_encode($sessao);
-                    exit;
-                }
-                
+        try{
+            $query = $pdo->prepare("SELECT login 
+                                    FROM usuario 
+                                    WHERE login= ? 
+                                    AND senha= ?");
+            $query->bindParam(1, $dados["login"]);
+            $query->bindParam(2, $dados["senha"]);
+            $query->execute();
+            if(($query->rowCount()) == 1){
+                $objectDataLogin = criaSessaoLogado($dados["login"], $pdo);
+                echo json_encode($objectDataLogin);
                 exit;
-            }catch(PDOException $erro){
-                $dados["erroAoConsultar"] = $erro;
             }
+            $objectDataLogin["loginValido"] = false;
+            echo json_encode($objectDataLogin);
+        }catch(PDOException $erro){
+            $objectDataLogin["loginValido"] = false;
+            $objectDataLogin["erro"] = $erro;
+            echo json_encode($objectDataLogin);
         }
     }
-}else
+}
 
 // ################################### GET ###################################
 
