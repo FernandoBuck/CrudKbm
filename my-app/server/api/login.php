@@ -1,7 +1,7 @@
 <?php
-include("../conexao.php");
-include("../api/validacoesForms.php");
-include("../api/manipulaSessoes.php");
+require("../conexao.php");
+require("../api/validacoesForms.php");
+require("../api/manipulaSessoes.php");
 header("Content-Type: application/json");
 $method = $_SERVER["REQUEST_METHOD"];
 
@@ -54,17 +54,13 @@ if ($method === "GET") {
     
     if($_GET["funcao"] == "validaSessao"){
         $dados = [
-            "login" => $_GET["dados"]["login"],
-            "hash" => $_GET["dados"]["hash"],
+            "login" => $_GET["login"],
+            "hash" => $_GET["hash"],
             "timeStamp" => time()
         ];
         
         $validaSessao = validaSessaoAtiva($dados["login"], $dados["hash"], $dados["timeStamp"], $pdo);
-        
-        //if(in_array(false, $validaSessao, true) === true){
-        //    echo json_encode();
-        //    exit;
-        //}
+        echo json_encode($validaSessao);
     }
 }
 

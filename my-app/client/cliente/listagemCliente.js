@@ -1,3 +1,4 @@
+validaSessao()
 $( document ).ready(function() {
     const buscaTodosClientes = async function(){       
         const response = await $.ajax({

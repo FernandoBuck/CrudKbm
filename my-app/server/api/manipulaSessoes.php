@@ -1,6 +1,6 @@
 <?php
 
-function validaSessaoAtiva($hash, $login, $timeStamp, $pdo){
+function validaSessaoAtiva($login, $hash, $timeStamp, $pdo){
     define("umDiaEmSegundos", 86400);
     try{
         $query = $pdo->prepare("
@@ -14,16 +14,15 @@ function validaSessaoAtiva($hash, $login, $timeStamp, $pdo){
                 hash= ? 
             AND 
                 login= ?
-            LIMIT 1
             ");
         $query->bindParam(1, $hash);
         $query->bindParam(2, $login);
-        $query->excute();
+        $query->execute();
         if(($query->rowCount()) == 1){
             $sessao = $query->fetch(PDO::FETCH_ASSOC);
-            $horasLogado =  $timeStamp - ($sessao["timestamp"]);
-            if($horasLogado >= umDiaEmSegundos){
-                deletaSessaoLogado($login, $pdo);
+            $segundosLogado =  $timeStamp - ($sessao["timestamp"]);
+            if($segundosLogado >= umDiaEmSegundos){
+                deletaSessaoLogado($hash, $pdo);
                 return false;
             }
             return true;
@@ -53,8 +52,8 @@ function criaSessaoLogado($login, $pdo){
         $query->bindParam(1, $hash);
         $query->bindParam(2, $timeStamp);
         $query->bindParam(3, $login);
-        $query->excute();
-        if(($query->rowCount() == 1)){
+        $query->execute();
+        if(($query->rowCount()) == 1){
             $sessao = [
                 "loginValido"   => true,
                 "hash"          => $hash,
@@ -71,22 +70,22 @@ function criaSessaoLogado($login, $pdo){
     }
 }
 
-function deletaSessaoLogado($login, $pdo){
+function deletaSessaoLogado($hash, $pdo){
     try{
         $query = $pdo->prepare("
             DELETE FROM 
                 sessoesativas
             WHERE
-                login= ?
+                hash= ?
             ");
-            $query->bindParam($login);
+            $query->bindParam($hash);
             $query->execute();
             if(($query->rowCount()) == 1){
                 return true;
             }
             return false;
     }catch(PDOException $erro){
-        echo "Erro ao procurar sessão: ".$erro;
+        echo "Erro ao excluir sessão: ".$erro;
         return false;
     }
 }

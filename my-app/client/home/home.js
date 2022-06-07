@@ -1,0 +1,4 @@
+validaSessao()
+$( document ).ready(function() {
+    
+})

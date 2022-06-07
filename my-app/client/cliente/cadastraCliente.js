@@ -1,3 +1,4 @@
+validaSessao()
 $( document ).ready(function() 
 {
     $("#botao-cadastro-cliente").click(async function(e)

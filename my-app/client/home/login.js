@@ -1,11 +1,9 @@
+validaSessaoIndex()
 $( document ).ready(function() 
 {
+    validaSessaoIndex()
 
-    loginCredential = localStorage.getItem("loginCredential")
-
-
-    $("#botao-login").click(async function(e)
-    {
+    $("#botao-login").click(async function(e){
         e.preventDefault()
 
         const login = document.getElementById("id-login").value
@@ -23,14 +21,17 @@ $( document ).ready(function()
             data: {
                 funcao : "validaLogin",
                 dados : objectDataLogin
-            },
+            }
         })
 
         if(response.loginValido){
-            console.log(response)
+            localStorage.setItem("hash", response.hash)
+            localStorage.setItem("login", response.login)
+            window.location.href = "../../client/home/home.html"
         }else{
             exibeErrosFormLogin(response)
         }
     })
+
     limpaCamposAoPreencher()
 })
