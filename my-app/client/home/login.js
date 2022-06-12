@@ -1,7 +1,5 @@
 validaSessaoIndex()
-$( document ).ready(function() 
-{
-    validaSessaoIndex()
+$( document ).ready(function() {
 
     $("#botao-login").click(async function(e){
         e.preventDefault()

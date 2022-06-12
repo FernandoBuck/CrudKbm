@@ -11,3 +11,7 @@
     font-size: 11px;
     color: red;
 }
+
+#botao-logout{
+    cursor: pointer;
+}

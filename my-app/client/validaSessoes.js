@@ -46,9 +46,19 @@ async function validaSessaoIndex() {
     }).done(function (res){
         if(res){
             window.location.href = "../../client/home/home.html"    
+        }else{
+            localStorage.clear()
         }
     }).fail(function (){
         localStorage.clear()
         window.location.href = "../../client/erro.html"
     })
 }
+
+$( document ).ready(function() {
+    
+    $("#botao-logout").click(async function(e){
+        localStorage.clear()
+        window.location.href = "../../client/home/index.html"
+    })
+})
