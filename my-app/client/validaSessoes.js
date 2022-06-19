@@ -28,7 +28,7 @@ async function validaSessao() {
         }
     }).fail(function (){
         localStorage.clear()
-        window.location.href = "../../client/erro.html"
+        window.location.href = "../../client/error.html"
     })
     
 }
@@ -51,7 +51,7 @@ async function validaSessaoIndex() {
         }
     }).fail(function (){
         localStorage.clear()
-        window.location.href = "../../client/erro.html"
+        window.location.href = "../../client/error.html"
     })
 }
 

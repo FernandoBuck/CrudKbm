@@ -7,7 +7,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="/my-app/client/validaSessoes.js"></script>
+        <script type="text/javascript" src="/my-app/client/validacoes.js"></script>
         <script type="text/javascript" src="/my-app/client/cliente/listagemCliente.js"></script>
         <title>Consulta de Clientes</title>
         <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
@@ -76,7 +78,6 @@
                                 <th scope="col">Nome</th>
                                 <th scope="col">Usuario</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Endereço</th>
                                 <th scope="col">Ação</th>
                             </tr>
                         </thead>
@@ -98,29 +99,35 @@
                                 <form method="post" id="form-editar-cliente-modal" class="row g-3">
                                     <div class="mb-3">
                                         <label for="id-nome-modal" class="form-label">Nome:</label>
-                                        <input type="email" class="form-control" id="id-nome-modal"/>
+                                        <input class="form-control" id="id-nome-modal" name="nome"/>
+                                        <div id="div-erro-nome" class="class-div-erro"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="id-email-modal" class="form-label">Email:</label>
-                                        <input class="form-control" id="id-email-modal"/>
+                                        <input class="form-control" id="id-email-modal" name="email"/>
+                                        <div id="div-erro-email" class="class-div-erro"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="id-login-modal" class="form-label">Login:</label>
-                                        <input class="form-control" id="id-login-modal"/>
+                                        <input class="form-control" id="id-login-modal" name="login"/>
+                                        <div id="div-erro-login" class="class-div-erro"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="id-senha-modal" class="form-label">Senha:</label>
-                                        <input type="password" class="form-control" id="id-senha-modal"/>
+                                        <input type="password" class="form-control" id="id-senha-modal" name="senha"/>
+                                        <div id="div-erro-senha" class="class-div-erro"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="id-confirma-senha-modal" class="form-label">Confirmar Senha:</label>
-                                        <input type="password" class="form-control" id="id-confirma-senha-modal"/>
+                                        <input type="password" class="form-control" id="id-confirma-senha-modal" name="confirma-senha"/>
+                                        <div id="div-erro-confirma-senha" class="class-div-erro"></div>
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                <button type="button" class="btn btn-primary" id="botao-editar-cliente-modal">Editar</button>
+                                <button type="button" class="btn btn-primary" id="id-botao-editar-cliente-modal">Editar</button>
+                                <button type="button" class="btn btn-warning" id="id-botao-editar-senha-modal">Editar Senha</button>
                             </div>
                         </div>
                     </div>

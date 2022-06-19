@@ -16,39 +16,76 @@ if ($method === "POST") {
             "login" => $_POST["dados"]["login"],
             "senha" => $_POST["dados"]["senha"],
             "confirmarSenha" => $_POST["dados"]["confirmarSenha"],
-            "ativo" => "1"
+            "ativo" => "1",
+            "uuid" => uniqid(rand(), true),
+            "cep" => $_POST["dados"]["cep"],
+            "numeroCasa" => $_POST["dados"]["numeroCasa"],
+            "rua"   => $_POST["dados"]["rua"],
+            "bairro" => $_POST["dados"]["bairro"],
+            "complemento" => $_POST["dados"]["complemento"],
+            "cidade" => $_POST["dados"]["cidade"],
+            "estado" => $_POST["dados"]["estado"]
         ];
 
         $formCadastroValidado = validaFormCadastroCliente($dados, $pdo);
-        
-        //Requer que todos sejam true
+
         if(in_array(false, $formCadastroValidado, true) === true){
             $formCadastroValidado["clienteAdd"] = false;
             echo json_encode($formCadastroValidado);
             exit;
         }
 
+        $dados["hashSenha"] = password_hash($dados["senha"], PASSWORD_DEFAULT);
+
         try
         {
-            $query = $pdo->prepare("
+            $queryCliente = $pdo->prepare("
                 INSERT INTO 
                     cliente 
                         (nome, 
                         email,
                         login, 
                         senha,
-                        ativo) 
+                        ativo,
+                        uuid) 
                 VALUES 
-                    (?, ?, ?, ?, ?)
+                    (?, ?, ?, ?, ?, ?)
                 ");
-            $query->bindParam(1, $dados["nome"]);
-            $query->bindParam(2, $dados["email"]);
-            $query->bindParam(3, $dados["login"]);
-            $query->bindParam(4, $dados["senha"]);
-            $query->bindParam(5, $dados["ativo"]);
-            $query->execute();
-            $contaLinhaAdicionada = $query->rowCount();
-            if($contaLinhaAdicionada == 1){
+            $queryCliente->bindParam(1, $dados["nome"]);
+            $queryCliente->bindParam(2, $dados["email"]);
+            $queryCliente->bindParam(3, $dados["login"]);
+            $queryCliente->bindParam(4, $dados["hashSenha"]);
+            $queryCliente->bindParam(5, $dados["ativo"]);
+            $queryCliente->bindParam(6, $dados["uuid"]);
+            $queryCliente->execute();
+
+            $queryEndereco = $pdo->prepare("
+                INSERT INTO
+                    endereco
+                        (rua,
+                        bairro,
+                        numeroCasa,
+                        estado,
+                        cidade,
+                        cep,
+                        ativo,
+                        complemento,
+                        uuidCliente)
+                VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $queryEndereco->bindParam(1, $dados["rua"]);
+            $queryEndereco->bindParam(2, $dados["bairro"]);
+            $queryEndereco->bindParam(3, $dados["numeroCasa"]);
+            $queryEndereco->bindParam(4, $dados["estado"]);
+            $queryEndereco->bindParam(5, $dados["cidade"]);
+            $queryEndereco->bindParam(6, $dados["cep"]);
+            $queryEndereco->bindParam(7, $dados["ativo"]);
+            $queryEndereco->bindParam(8, $dados["complemento"]);
+            $queryEndereco->bindParam(9, $dados["uuid"]);
+            $queryEndereco->execute();
+
+            if( ( ( $queryCliente->rowCount() ) == 1 ) && ( $queryEndereco->rowCount() == 1 ) ){
                 $formCadastroValidado["clienteAdd"] = true;
                 echo json_encode($formCadastroValidado);
                 exit;    
@@ -58,102 +95,88 @@ if ($method === "POST") {
             exit;
         }catch (PDOException $erro)
         {
-            echo "Erro ao inserir cliente: ".$erro;
+            echo json_encode("Erro ao inserir cliente: ".$erro);
             exit;
         }
     }
 
-    if($_POST["funcao"] == "editarCliente"){
-        $nome = $_POST["dados"]["nome"];
-        $email = $_POST["dados"]["email"];
-        $login = $_POST["dados"]["login"];
-        $senha = $_POST["dados"]["senha"];
-        $confirmaSenha = $_POST["dados"]["confirmaSenha"];
-        $idCliente = $_POST["dados"]["id"];
+    if($_POST["funcao"] == "editarDadosCliente"){
 
-        try
-        {
-            $query = $pdo->prepare("
-            UPDATE 
-                cliente 
-            SET 
-                nome = ?, email = ?, login = ?, senha = ? 
-            WHERE 
-                (id = ?); 
-            ");
-            $query->bindParam(1, $nome);
-            $query->bindParam(2, $email);
-            $query->bindParam(3, $login);
-            $query->bindParam(4, $senha);
-            $query->bindParam(5, $idCliente);
-            $query->execute();
-            $clienteEditado = $query->rowCount();
-            if($clienteEditado == 1){
-                echo json_encode(array("clienteAlterado" => true));
-                exit;    
-            }
-            echo json_encode(array("clienteAlterado" => false));
+        $dados = [
+            "nome"  => $_POST["dados"]["nome"],
+            "email" => $_POST["dados"]["email"],
+            "login" => $_POST["dados"]["login"],
+            "uuid" => $_POST["dados"]["uuid"]
+        ];
+
+        $formValidado = validaFormEditaDadosCliente($dados, $pdo);
+
+        if(in_array(false, $formValidado, true) === true){
+            $formValidado["clienteAlterado"] = false;
+            echo json_encode($formValidado);
             exit;
-        }catch(PDOException $erro)
-        {
-            echo "Erro ao alterar cliente: ".$erro;
         }
+
+        echo json_encode(atualizaDadosCliente($dados, $pdo));
+    }else
+
+    if($_POST["funcao"] == "editarSenhaCliente"){
+
+        $dados = [
+            "senha" => $_POST["dados"]["senha"],
+            "confirmaSenha" => $_POST["dados"]["confirmaSenha"],
+            "uuid" => $_POST["dados"]["uuid"]
+        ];
+
+        $formValidado = validaFormAlteraSenhaCliente($dados);
+
+        if(in_array(false, $formValidado, true) === true){
+            $formValidado["senhaAlterada"] = false;
+            echo json_encode($formValidado);
+            exit;
+        }
+
+        $dados["hashSenha"] = password_hash($dados["senha"], PASSWORD_DEFAULT);
+
+        echo json_encode(atualizaSenhaCliente($dados, $pdo));
     }
     exit;
-}
+}else
+
 // ################################### GET ################################### 
 
 if ($method === "GET") {
 
     if($_GET["funcao"] == "buscarTodosClientes"){
-        try
-        {
-            $query = $pdo->prepare("SELECT * FROM cliente");
-            $query->execute();
-            $clientes = $query->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($clientes);
-            exit;
-        }catch (PDOException $erro)
-        {
-            echo "Erro ao buscar cliente: ".$erro;
-            exit;
-        }
-    }
+        echo json_encode(buscarTodosClientes($pdo));
+    }else
 
-    if($_GET["funcao"] == "buscaID"){
-        $id = $_GET["id"];
+    if($_GET["funcao"] == "buscaUUID"){
+        $uuid = $_GET["uuid"];
+        echo json_encode(uuidBuscaDadosCliente($uuid, $pdo));
+    }else
+
+    if($_GET["funcao"] == "buscaEmail"){
+        $email = $_GET["email"];
         try{
-            $query = $pdo->prepare("SELECT * FROM cliente WHERE id = ?");
-            $query->bindParam(1, $id);
+            $query = $pdo ->prepare("SELECT email FROM cliente WHERE email = ?");
+            $query->bindParam(1, $email);
             $query->execute();
-            $cliente = $query->fetch(PDO::FETCH_ASSOC);
-            echo json_encode($cliente);
-        }catch (PDOException $erro)
-        {
-            echo "Erro ao buscar cliente: ".$erro;
-        }
-    }
-    exit;
-}
-
-if($_GET["funcao"] == "buscaEmail"){
-    $email = $_GET["email"];
-    try{
-        $query = $pdo ->prepare("SELECT email FROM cliente WHERE email = ?");
-        $query->bindParam(1, $email);
-        $query->execute();
-        $result = $query->rowCount();
-        if($result == 1){
-            echo json_encode(array("clienteCadastrado" => true));
+            $result = $query->rowCount();
+            if($result == 1){
+                echo json_encode(array("clienteCadastrado" => true));
+                exit;
+            }
+            echo json_encode(array("clienteCadastrado" => false));
             exit;
+        }catch(PDOException $erro)
+        {
+            echo "Erro ao buscar email: ".$erro;
         }
-        echo json_encode(array("clienteCadastrado" => false));
-        exit;
-    }catch(PDOException $erro)
-    {
-        echo "Erro ao buscar email: ".$erro;
     }
-}
+
+    exit;
+}else
 
 // ################################### DELETE ###################################
 if ($method === "DELETE") {
@@ -181,4 +204,86 @@ if ($method === "DELETE") {
     }
     exit;
 }
+
+// ################################### Querys Cliente ###################################
+
+function buscarTodosClientes($pdo){
+    try{
+        $query = $pdo->prepare("SELECT id, nome, email, login, uuid FROM cliente");
+        $query->execute();
+        $clientes = $query->fetchAll(PDO::FETCH_ASSOC);
+        return $clientes;
+    }catch (PDOException $erro)
+    {
+        return ("Erro ao buscar cliente: ".$erro);
+    }
+}
+
+function uuidBuscaDadosCliente($uuid, $pdo){
+    try{
+        $query = $pdo->prepare("SELECT nome, email, login, ativo, uuid FROM cliente WHERE uuid = ?");
+        $query->bindParam(1, $uuid);
+        $query->execute();
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }catch (PDOException $erro)
+    {
+        return ("Erro ao buscar cliente: ".$erro);
+    }
+}
+
+function atualizaDadosCliente($dados, $pdo){
+    try{
+        $query = $pdo->prepare("
+        UPDATE 
+            cliente 
+        SET 
+            nome = ?, email = ?, login = ? 
+        WHERE 
+            (uuid = ?); 
+        ");
+        $query->bindParam(1, $dados["nome"]);
+        $query->bindParam(2, $dados["email"]);
+        $query->bindParam(3, $dados["login"]);
+        $query->bindParam(4, $dados["uuid"]);
+        $query->execute();
+
+        if(($query->rowCount()) == 1){
+            return (array("clienteAlterado" => true));
+        }
+        return (array("clienteAlterado" => false));
+    }catch(PDOException $erro)
+    {
+        return ("Erro ao atualizar cliente: ".$erro);
+    }
+}
+
+function atualizaSenhaCliente($dados, $pdo){
+    try{
+        $query = $pdo->prepare("
+            UPDATE 
+                cliente 
+            SET 
+                senha = ? 
+            WHERE 
+                (uuid = ?);"
+        );
+        $query->bindParam(1, $dados["hashSenha"]);
+        $query->bindParam(2, $dados["uuid"]);
+        $query->execute();
+
+        if(($query->rowCount()) == 1){
+            $dados["senhaAlterada"] = true;
+            return $dados;
+        }
+        $dados["senhaAlterada"] = false;
+        return $dados;
+    }catch(PDOException $erro)
+    {
+        $dados["senhaAlterada"] = false;
+        $dados["erro"] = $erro;
+        return $dados;
+    }
+}
+
 ?>
+
