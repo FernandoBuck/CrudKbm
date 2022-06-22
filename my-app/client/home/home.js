@@ -1,4 +1,1 @@
 validaSessao()
-$( document ).ready(function() {
-    
-})
