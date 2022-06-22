@@ -216,41 +216,41 @@ function exibeErrosFormCliente(objectDataCliente){
         erroCampoVazio("confirma-senha")
     }
 
-    if(!(objectDataCliente.campoCepPreenchido)){
+    if((objectDataCliente.campoCepPreenchido) === false){
         erroCampoVazio("cep")
-    }else if((!objectDataCliente.campoCepValido)){
+    }else if((objectDataCliente.campoCepValido) === false){
         erroCepInvalido()
     }
 
-    if(!(objectDataCliente.campoNumeroCasaPreenchido)){
+    if((objectDataCliente.campoNumeroCasaPreenchido) === false){
         erroCampoVazio("numero-casa")
-    }else if((!objectDataCliente.campoNumeroCasaValido)){
+    }else if((objectDataCliente.campoNumeroCasaValido) === false){
         erroCaracteresInvalidos("numero-casa")
     }
 
-    if(!(objectDataCliente.campoRuaPreenchido)){
+    if((objectDataCliente.campoRuaPreenchido) === false){
         erroCampoVazio("rua")
-    }else if((!objectDataCliente.campoRuaValido)){
+    }else if((objectDataCliente.campoRuaValido) === false){
         erroCaracteresInvalidos("rua")
     }
 
-    if(!(objectDataCliente.campoBairroPreenchido)){
+    if((objectDataCliente.campoBairroPreenchido) === false){
         erroCampoVazio("bairro")
-    }else if((!objectDataCliente.campoBairroValido)){
+    }else if((objectDataCliente.campoBairroValido) === false){
         erroCaracteresInvalidos("bairro")
     }
 
-    if(!(objectDataCliente.campoCidadePreenchido)){
+    if((objectDataCliente.campoCidadePreenchido) === false){
         erroCampoVazio("cidade")
-    }else if((!objectDataCliente.campoCidadeValido)){
+    }else if((objectDataCliente.campoCidadeValido) === false){
         erroCaracteresInvalidos("cidade")
     }
 
-    if(!(objectDataCliente.campoEstadoPreenchido)){
+    if((objectDataCliente.campoEstadoPreenchido) === false){
         erroCampoVazio("estado")
-    }else if((!objectDataCliente.campoEstadoValido)){
+    }else if((objectDataCliente.campoEstadoValido) === false){
         erroCaracteresInvalidos("estado")
-    }else if((!objectDataCliente.estadoExiste)){
+    }else if((objectDataCliente.estadoExiste) === false){
         erroEstadoInvalido()
     }
 }
@@ -318,5 +318,51 @@ function exibeErrosEditaSenha(objectData){
 
     if((objectData.campoConfirmarSenhaPreenchido) === false){
         erroCampoVazio("confirma-senha")
+    }
+}
+
+function exibeErrosFormAdicionaEndereco(objectData, nForm){
+    if((objectData.campoCepPreenchido) === false){
+        erroCampoVazio(("cep-"+nForm))
+    }else if((objectData.campoCepValido) === false){
+        erroCepInvalido()
+    }
+
+    if((objectData.campoNumeroCasaPreenchido) === false){
+        erroCampoVazio(("numero-casa-"+nForm))
+    }else if((objectData.campoNumeroCasaValido) === false){
+        erroCaracteresInvalidos(("numero-casa-"+nForm))
+    }
+
+    if((objectData.campoRuaPreenchido) === false){
+        erroCampoVazio(("rua-"+nForm))
+    }else if((objectData.campoRuaValido) === false){
+        erroCaracteresInvalidos(("rua"+nForm))
+    }
+
+    if((objectData.campoBairroPreenchido) === false){
+        erroCampoVazio(("bairro-"+nForm))
+    }else if((objectData.campoBairroValido) === false){
+        erroCaracteresInvalidos(("bairro-"+nForm))
+    }
+
+    if((objectData.campoCidadePreenchido) === false){
+        erroCampoVazio(("cidade-"+nForm))
+    }else if((objectData.campoCidadeValido) === false){
+        erroCaracteresInvalidos(("cidade"+nForm))
+    }
+
+    if((objectData.campoEstadoPreenchido) === false){
+        erroCampoVazio(("estado-"+nForm))
+    }else if((objectData.campoEstadoValido) === false){
+        erroCaracteresInvalidos(("estado-"+nForm))
+    }else if((objectData.estadoExiste) === false){
+        erroEstadoInvalido()
+    }
+}
+
+function exibeErrosExcluiEndereco(objectData){
+    if(objectData.umEndereco){
+        alert("Você deve ter, pelo menos, um endereço cadastrado.\nCadastre um novo endereço antes de apagar este.")
     }
 }

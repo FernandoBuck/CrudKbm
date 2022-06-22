@@ -18,6 +18,7 @@ if ($method === "POST") {
             "confirmarSenha" => $_POST["dados"]["confirmarSenha"],
             "ativo" => "1",
             "uuid" => uniqid(rand(), true),
+            "uuidEndereco" => uniqid(rand(), true),
             "cep" => $_POST["dados"]["cep"],
             "numeroCasa" => $_POST["dados"]["numeroCasa"],
             "rua"   => $_POST["dados"]["rua"],
@@ -62,7 +63,8 @@ if ($method === "POST") {
             $queryEndereco = $pdo->prepare("
                 INSERT INTO
                     endereco
-                        (rua,
+                        (uuid, 
+                        rua,
                         bairro,
                         numeroCasa,
                         estado,
@@ -72,17 +74,18 @@ if ($method === "POST") {
                         complemento,
                         uuidCliente)
                 VALUES
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
-            $queryEndereco->bindParam(1, $dados["rua"]);
-            $queryEndereco->bindParam(2, $dados["bairro"]);
-            $queryEndereco->bindParam(3, $dados["numeroCasa"]);
-            $queryEndereco->bindParam(4, $dados["estado"]);
-            $queryEndereco->bindParam(5, $dados["cidade"]);
-            $queryEndereco->bindParam(6, $dados["cep"]);
-            $queryEndereco->bindParam(7, $dados["ativo"]);
-            $queryEndereco->bindParam(8, $dados["complemento"]);
-            $queryEndereco->bindParam(9, $dados["uuid"]);
+            $queryEndereco->bindParam(1, $dados["uuidEndereco"]);
+            $queryEndereco->bindParam(2, $dados["rua"]);
+            $queryEndereco->bindParam(3, $dados["bairro"]);
+            $queryEndereco->bindParam(4, $dados["numeroCasa"]);
+            $queryEndereco->bindParam(5, $dados["estado"]);
+            $queryEndereco->bindParam(6, $dados["cidade"]);
+            $queryEndereco->bindParam(7, $dados["cep"]);
+            $queryEndereco->bindParam(8, $dados["ativo"]);
+            $queryEndereco->bindParam(9, $dados["complemento"]);
+            $queryEndereco->bindParam(10, $dados["uuid"]);
             $queryEndereco->execute();
 
             if( ( ( $queryCliente->rowCount() ) == 1 ) && ( $queryEndereco->rowCount() == 1 ) ){
@@ -139,6 +142,58 @@ if ($method === "POST") {
         $dados["hashSenha"] = password_hash($dados["senha"], PASSWORD_DEFAULT);
 
         echo json_encode(atualizaSenhaCliente($dados, $pdo));
+    }else
+
+    if($_POST["funcao"] == "adicionaEndereco"){
+
+        $dados = [
+            "uuidCliente" => $_POST["dados"]["uuidCliente"],
+            "uuidEndereco" => uniqid(rand(), true),
+            "cep" => $_POST["dados"]["cep"],
+            "numeroCasa" => $_POST["dados"]["numeroCasa"],
+            "rua"   => $_POST["dados"]["rua"],
+            "bairro" => $_POST["dados"]["bairro"],
+            "complemento" => $_POST["dados"]["complemento"],
+            "cidade" => $_POST["dados"]["cidade"],
+            "estado" => $_POST["dados"]["estado"],
+            "ativo" => "1"
+        ];
+
+        $formCadastroValidado = validaFormAdicionaEndereco($dados);
+
+        if(in_array(false, $formCadastroValidado, true) === true){
+            $formCadastroValidado["enderecoAdd"] = false;
+            echo json_encode($formCadastroValidado);
+            exit;
+        }
+
+        echo json_encode(adicionaEndereco($dados, $pdo));
+    }else
+
+    if($_POST["funcao"] == "editaEndereco"){
+
+        $dados = [
+            "uuidCliente" => $_POST["dados"]["uuidCliente"],
+            "uuidEndereco" => $_POST["dados"]["uuidEndereco"],
+            "cep" => $_POST["dados"]["cep"],
+            "numeroCasa" => $_POST["dados"]["numeroCasa"],
+            "rua"   => $_POST["dados"]["rua"],
+            "bairro" => $_POST["dados"]["bairro"],
+            "complemento" => $_POST["dados"]["complemento"],
+            "cidade" => $_POST["dados"]["cidade"],
+            "estado" => $_POST["dados"]["estado"],
+            "ativo" => "1"
+        ];
+
+        $formCadastroValidado = validaFormAdicionaEndereco($dados);
+
+        if(in_array(false, $formCadastroValidado, true) === true){
+            $formCadastroValidado["enderecoAlterado"] = false;
+            echo json_encode($formCadastroValidado);
+            exit;
+        }
+
+        echo json_encode(editaEndereco($dados, $pdo));
     }
     exit;
 }else
@@ -173,6 +228,11 @@ if ($method === "GET") {
         {
             echo "Erro ao buscar email: ".$erro;
         }
+    }else
+
+    if($_GET["funcao"] == "buscaEnderecosCliente"){
+        $uuid = $_GET["uuid"];
+        echo json_encode(uuidBuscaEnderecosCliente($uuid, $pdo));
     }
 
     exit;
@@ -201,6 +261,20 @@ if ($method === "DELETE") {
         {
             echo "Erro ao buscar cliente: ".$erro;
         }
+    }else
+
+    if($_DELETE["funcao"] == "excluiEndereco"){
+        $dados = [
+            "uuidCliente" => $_DELETE["dados"]["uuidCliente"],
+            "uuidEndereco" => $_DELETE["dados"]["uuidEndereco"]
+        ];
+
+        if(validaUmEndereco($dados, $pdo)){
+            echo json_encode(array("umEndereco" => true, "enderecoExcluido" => false)); 
+            return;
+        }
+
+        echo json_encode(excluiEndereco($dados, $pdo));
     }
     exit;
 }
@@ -285,5 +359,129 @@ function atualizaSenhaCliente($dados, $pdo){
     }
 }
 
+function uuidBuscaEnderecosCliente($uuid, $pdo){
+    try{
+        $query = $pdo->prepare("
+                    SELECT 
+                        uuid, rua, bairro, numeroCasa, estado, cidade, cep, ativo, complemento, uuidCliente 
+                    FROM 
+                        endereco
+                    WHERE 
+                        uuidCliente = ?
+                "
+        );
+        $query->bindParam(1, $uuid);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch(PDOException $erro)
+    {
+        return ("Erro ao buscar endereco: ".$erro);
+    }
+}
+
+function adicionaEndereco($dados, $pdo){
+    try{
+        $query = $pdo->prepare("
+                INSERT INTO
+                    endereco
+                        (uuid, 
+                        rua,
+                        bairro,
+                        numeroCasa,
+                        estado,
+                        cidade,
+                        cep,
+                        ativo,
+                        complemento,
+                        uuidCliente)
+                VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $query->bindParam(1, $dados["uuidEndereco"]);
+            $query->bindParam(2, $dados["rua"]);
+            $query->bindParam(3, $dados["bairro"]);
+            $query->bindParam(4, $dados["numeroCasa"]);
+            $query->bindParam(5, $dados["estado"]);
+            $query->bindParam(6, $dados["cidade"]);
+            $query->bindParam(7, $dados["cep"]);
+            $query->bindParam(8, $dados["ativo"]);
+            $query->bindParam(9, $dados["complemento"]);
+            $query->bindParam(10, $dados["uuidCliente"]);
+            $query->execute();
+
+            if(($query->rowCount()) == 1){
+                return (array("enderecoAdd" => true));
+            }
+            return (array("enderecoAdd" => false));
+    }catch (PDOException $erro)
+    {
+        return (array("erro" => $erro));
+    }
+}
+
+function editaEndereco($dados, $pdo){
+    try{
+        $query= $pdo->prepare("
+            UPDATE
+                endereco
+            SET
+                rua = ?, 
+                bairro = ?, 
+                numeroCasa = ?,
+                estado = ?, 
+                cidade = ?, 
+                cep = ?,
+                complemento = ? 
+            WHERE
+                uuid = ?
+            AND
+                uuidCliente = ?
+        ");
+        $query->bindParam(1, $dados["rua"]);
+        $query->bindParam(2, $dados["bairro"]);
+        $query->bindParam(3, $dados["numeroCasa"]);
+        $query->bindParam(4, $dados["estado"]);
+        $query->bindParam(5, $dados["cidade"]);
+        $query->bindParam(6, $dados["cep"]);
+        $query->bindParam(7, $dados["complemento"]);
+        $query->bindParam(8, $dados["uuidEndereco"]);
+        $query->bindParam(9, $dados["uuidCliente"]);
+        $query->execute();
+
+        if(($query->rowCount()) == 1){
+            return (array("enderecoAlterado" => true));
+        }
+        return (array("enderecoAlterado" => false));
+    }catch (PDOException $erro){
+        return (array(
+                        "erro" => $erro,
+                        "enderecoAlterado" => false
+                    ));
+    }
+}
+
+function excluiEndereco($dados, $pdo){
+    try{
+        $query = $pdo->prepare("
+            DELETE FROM
+                endereco
+            WHERE
+                uuid = ?
+            AND
+                uuidCliente = ?
+        ");
+        $query->bindParam(1, $dados["uuidEndereco"]);
+        $query->bindParam(2, $dados["uuidCliente"]);
+        $query->execute();
+
+        if(($query->rowCount()) == 1)return(array("enderecoExcluido" => true));
+        return(array("enderecoExcluido" => false));
+    }catch (PDOException $erro){
+        return (array(
+                        "erro" => $erro,
+                        "enderecoExcluido" => false
+                    ));
+    }
+}
 ?>
 

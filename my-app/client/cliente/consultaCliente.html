@@ -8,6 +8,7 @@
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="/my-app/client/validaSessoes.js"></script>
         <script type="text/javascript" src="/my-app/client/validacoes.js"></script>
         <script type="text/javascript" src="/my-app/client/cliente/listagemCliente.js"></script>
@@ -128,6 +129,28 @@
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                                 <button type="button" class="btn btn-primary" id="id-botao-editar-cliente-modal">Editar</button>
                                 <button type="button" class="btn btn-warning" id="id-botao-editar-senha-modal">Editar Senha</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="modal-editar-endereco" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Endereços</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" id="form-cadastro-cliente" class="row g-3">
+                                    <div id="dados-endereco" class="col-md-12 row g-3">
+                                    </div>
+                                    <div id="novo-endereco" class="col-md-12 row g-3">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                <button type="button" class="btn btn-primary" id="id-botao-novo-endereco">Novo Endereço</button>
                             </div>
                         </div>
                     </div>
