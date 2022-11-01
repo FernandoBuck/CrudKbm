@@ -8,13 +8,26 @@ $method = $_SERVER["REQUEST_METHOD"];
 if ($method === "POST") {
 
     if($_POST["funcao"] == "cadastrar"){
-        $nome = $_POST["dados"]["nome"];
-        $email = $_POST["dados"]["email"];
-        $login = $_POST["dados"]["login"];
-        $senha = $_POST["dados"]["senha"];
-        $confirmaSenha = $_POST["dados"]["confirmaSenha"];
-        $ativo = 1;
-        $permissa = 1;
+
+        $dados = [
+            "nome"      => $_POST["dados"]["nome"],
+            "email"     => $_POST["dados"]["email"],
+            "login"     => $_POST["dados"]["login"],
+            "senha"     => $_POST["dados"]["senha"],
+            "confirmaSenha" => $_POST["dados"]["confirmaSenha"],
+            "ativo"     => 1,
+            "permissao"  => 1
+        ];
+        
+        $formValidado = validaFormCadastroUsuario($dados, $pdo);
+
+        if(in_array(false, $formValidado, true) === true){
+            $formValidado["clienteAdd"] = false;
+            echo json_encode($formValidado);
+            exit;
+        }
+
+        $dados["hashSenha"] = password_hash($dados["senha"], PASSWORD_DEFAULT);
 
         try
         {
@@ -30,12 +43,12 @@ if ($method === "POST") {
                 VALUES 
                     (?, ?, ?, ?, ?, ?)
                 ");
-            $query->bindParam(1, $login);
-            $query->bindParam(2, $senha);
-            $query->bindParam(3, $email);
-            $query->bindParam(4, $permissa);
-            $query->bindParam(5, $ativo);
-            $query->bindParam(6, $nome);
+            $query->bindParam(1, $dados["login"]);
+            $query->bindParam(2, $dados["hashSenha"]);
+            $query->bindParam(3, $dados["email"]);
+            $query->bindParam(4, $dados["permissao"]);
+            $query->bindParam(5, $dados["ativo"]);
+            $query->bindParam(6, $dados["nome"]);
             $query->execute();
             $usuarioAdd = $query->rowCount();
             if($usuarioAdd == 1){
