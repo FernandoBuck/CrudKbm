@@ -180,28 +180,30 @@ function tentativaLoginInvalida(){
     $("#div-erro-login").html("*Login ou senha inválido.")
 }
 
-// Validação dos objetos retornados pela API
+//################# Validação dos objetos retornados pela API #################
 
 function exibeErrosFormCliente(objectDataCliente){
     
-    if(!(objectDataCliente.campoNomePreenchido)){
+    if((objectDataCliente.campoNomePreenchido) === false){
         erroCampoVazio("nome")
-    }else if(!(objectDataCliente.campoNomeValido)){
+    }else if((objectDataCliente.campoNomeValido) === false){
         erroNomeInvalido()
     }
 
-    if(!(objectDataCliente.campoEmailPreenchido)){
+    if((objectDataCliente.campoEmailPreenchido) === false){
         erroCampoVazio("email")
-    }else if(!(objectDataCliente.campoEmailValido)){
+    }else if((objectDataCliente.campoEmailValido) === false){
         erroEmailInvalido()
-    }else if(!(objectDataCliente.emailClienteDisponivel)){
+    }else if((objectDataCliente.emailClienteDisponivel) === false){
         emailCadastrado()
     }
     
-    if(!(objectDataCliente.campoLoginPreenchido)){
+    if((objectDataCliente.campoLoginPreenchido) === false){
         erroCampoVazio("login")
-    }else if(!(objectDataCliente.campoLoginValido)){
+    }else if((objectDataCliente.campoLoginValido) === false){
         erroLoginInvalido()
+    }else if((objectDataCliente.loginClienteDisponivel) === false){
+        loginCadastrado()
     }
 
     if((objectDataCliente.campoSenhaPreenchido) === false){
@@ -364,5 +366,41 @@ function exibeErrosFormAdicionaEndereco(objectData, nForm){
 function exibeErrosExcluiEndereco(objectData){
     if(objectData.umEndereco){
         alert("Você deve ter, pelo menos, um endereço cadastrado.\nCadastre um novo endereço antes de apagar este.")
+    }
+}
+
+function exibeErrosFormUsuario(objectData){
+    if((objectData.campoNomePreenchido) === false){
+        erroCampoVazio("nome")
+    }else if((objectData.campoNomeValido) === false){
+        erroNomeInvalido()
+    }
+
+    if((objectData.campoEmailPreenchido) === false){
+        erroCampoVazio("email")
+    }else if((objectData.campoEmailValido) === false){
+        erroEmailInvalido()
+    }else if((objectData.emailClienteDisponivel) === false){
+        emailCadastrado()
+    }
+    
+    if((objectData.campoLoginPreenchido) === false){
+        erroCampoVazio("login")
+    }else if((objectData.campoLoginValido) === false){
+        erroLoginInvalido()
+    }else if((objectData.loginClienteDisponivel) === false){
+        loginCadastrado()
+    }
+
+    if((objectData.campoSenhaPreenchido) === false){
+        erroCampoVazio("senha")
+    }else if((objectData.campoSenhaValido) === false){
+        erroSenhaInvalida()
+    }else if((objectData.camposSenhasIguais) === false){
+        erroSenhasDiferentes()
+    }
+
+    if((objectData.campoConfirmarSenhaPreenchido) === false){
+        erroCampoVazio("confirma-senha")
     }
 }

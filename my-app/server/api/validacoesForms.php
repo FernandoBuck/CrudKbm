@@ -101,6 +101,22 @@ function emailClienteDisponivel($email, $pdo){
     }
 }
 
+function emailUsuarioDisponivel($email, $pdo){
+    
+    try{
+        $query = $pdo->prepare("SELECT email FROM usuario WHERE email = ?");
+        $query->bindParam(1, $email);
+        $query->execute();
+        if(($query->rowCount()) == 1){
+            return false;
+        }
+        return true;
+    }catch(PDOException $erro)
+    {
+        echo "Erro ao buscar email: ".$erro;
+    }
+}
+
 function loginClienteDisponivel($login, $pdo){
     try{
         $query = $pdo->prepare("SELECT login FROM cliente WHERE login = ?");
@@ -206,6 +222,7 @@ function validaFormCadastroCliente(array $dados, $pdo){
         "campoSenhaValido"      => campoSenhaValido($dados["senha"]),
         "campoConfirmarSenhaValido" => campoSenhaValido($dados["confirmarSenha"]),
         "emailClienteDisponivel"    => emailClienteDisponivel($dados["email"], $pdo),
+        "loginClienteDisponivel"    => loginClienteDisponivel($dados["login"], $pdo),
         "campoCepPreenchido" => validaCampoPreenchido($dados["cep"]),
         "campoNumeroCasaPreenchido" => validaCampoPreenchido($dados["numeroCasa"]),
         "campoRuaPreenchido" => validaCampoPreenchido($dados["rua"]),
@@ -285,6 +302,25 @@ function validaFormAdicionaEndereco($dados){
         "estadoExiste"              => estadoExiste($dados["estado"])
     ];
     
+    return $camposValidados;
+}
+
+function validaFormCadastroUsuario($dados, $pdo){
+    $camposValidados = [
+        "campoNomePreenchido"   => validaCampoPreenchido($dados["nome"]),
+        "campoEmailPreenchido"  => validaCampoPreenchido($dados["email"]),
+        "campoLoginPreenchido"  => validaCampoPreenchido($dados["login"]),
+        "campoSenhaPreenchido"  => validaCampoPreenchido($dados["senha"]),
+        "campoConfirmarSenhaPreenchido" => validaCampoPreenchido($dados["confirmarSenha"]),
+        "camposSenhasIguais"    => camposSenhasIguais($dados["senha"], $dados["confirmarSenha"]),
+        "campoNomeValido"       => campoNomeValido($dados["nome"]),
+        "campoEmailValido"      => campoEmailValido($dados["email"]),
+        "campoLoginValido"      => campoLoginValido($dados["login"]),
+        "campoSenhaValido"      => campoSenhaValido($dados["senha"]),
+        "emailUsuarioDisponivel"    => emailUsuarioDisponivel($dados["email"], $pdo),
+        "loginUsuarioDisponivel"    => loginUsuarioDisponivel($dados["login"], $pdo)
+    ];
+
     return $camposValidados;
 }
 ?>

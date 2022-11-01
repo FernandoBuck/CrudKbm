@@ -64,4 +64,17 @@ if ($method === "GET") {
     }
 }
 
+// ################################### Querys Login ###################################
+
+function buscaHashSenha($login, $pdo){
+    try{
+        $query = $pdo->prepare("SELECT senha 
+                                    FROM usuario 
+                                    WHERE login= ?");
+        $query->bindParam(1, $login);
+        $query->execute();
+    }catch(PDOException $erro){
+        }
+}
+
 ?>
